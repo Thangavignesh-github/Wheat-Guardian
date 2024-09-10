@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheat Disease and Yield Prediction - Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('static/img/login-bg.png');
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 400px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            color: #555;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .signup-link {
+            margin-top: 20px;
+            color: #41d219;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link:hover {
+            color: #159e33;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>Login Page</h1><br>
+    <form method ="POST" action="">
+        
+        {{ form.hidden_tag() }} <!--to protect against csrf attacks, Flask-WTF can verify that the form submission originated from the same application -->
+        {{ form.username }} <br> <br> <!-- instead of input tag, flask-wtf render template -->
+        {{ form.password }} <br> <br>
+        <input type="submit" value="Login" class="login-button">
+        
+    </form>
+    <br>
+    <a href="{{url_for('register')}}">Don't have an account? Sign up</a>
+    </div>
+</body>
+</html>

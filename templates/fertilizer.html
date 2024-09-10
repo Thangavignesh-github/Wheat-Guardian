@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fertilizer Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("static/img/dieseasebackground.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            background-blend-mode: darken;
+        }
+
+        h1 {
+            color: #fbf8f8; 
+            font-size: 36px; 
+            font-weight: bold; 
+            text-shadow: 2px 2px 4px #2d7a3a; 
+            margin-bottom: 20px; 
+        }
+
+        form {
+            background-color: #202d3a; /* Updated background color */
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%; 
+            max-width: 400px; 
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 15px gold;/* Updated box shadow */
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #ffffff; /* Changed to white for contrast */
+        }
+
+        input[type="text"] {
+            width: 100%; 
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc; 
+            border-radius: 5px;
+            box-sizing: border-box; 
+        }
+
+        input[type="submit"] {
+            background-color: #25ac64; /* Updated button background color */
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; 
+        }
+
+        input[type="submit"]:hover {
+            background-color: #1f8e50; /* Slightly darker color for hover effect */
+        }
+
+        p {
+            margin: 20px 0;
+            font-weight: bold;
+            color: #f1f6f4;
+        }
+
+        .additional-info-box {
+            background-color: #202d3a; /* Updated background color */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: justify;
+            max-width: 800px; 
+            margin: 20px auto; 
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 15px gold;
+            color: #000; /* Text color set to black */
+        }
+
+        .image-container {
+            max-width: 35%;
+            box-sizing: border-box;
+            padding: 20px;
+            float: right;
+            margin-top: -20px;
+            margin-right: -60px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px; 
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .image-container {
+                float: none;
+                margin: 0 auto;
+                text-align: center;
+            }
+            
+            form {
+                width: 100%;
+                max-width: none;
+            }
+
+            .additional-info-box {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Fertilizer Recommendation System</h1>
+    <form method="post" action="/predict">
+        <label for="Nitrogen">Nitrogen</label>
+        <input required="required"type="text" id="Nitrogen" name="Nitrogen">
+
+        <label for="Potassium">Potassium</label>
+        <input required="required" type="text" id="Potassium" name="Potassium">
+
+        <label for="Phosphorous">Phosphorous</label>
+        <input  required="required" type="text" id="Phosphorous" name="Phosphorous">
+
+        <input type="submit" value="Predict">
+
+        {% if result %}
+            <p style="text-align: center; color: green; font-weight: bold;">{{ result }}</p>
+        {% endif %}
+    </form>
+    
+    <div class="additional-info-box">
+        {% if fertilizer_info %}
+            <div class="image-container">
+                <img src="{{ fertilizer_info.image_path }}" alt="{{ result }} Image">
+            </div>
+            <p style="color:white">{{ fertilizer_info.description }}</p>
+            <p style="color:white"><strong>Crops:</strong> {{ fertilizer_info.crops|join(', ') }}</p>
+            
+            <p style="color:white"><strong>How to Use:</strong></p>
+            <ul style="font-weight: bold; color:white"> <!-- Ensure list items are black -->
+                {% for sentence in fertilizer_info.how_to_use %}
+                    <li>{{ sentence }}</li>
+                {% endfor %}
+            </ul>
+            
+            <p style="color:white"><strong>Price:</strong> {{ fertilizer_info.price }}</p>
+        {% else %}
+            <p style="color: red;">No information available for this result.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

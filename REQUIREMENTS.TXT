@@ -1,0 +1,17 @@
+joblib
+requests
+pickle-mixin
+torch
+torchvision
+numpy<2
+pillow
+pathlib
+opencv-python
+flask
+flask-mysqldb
+flask-wtf
+flask-login
+wtforms
+email-validator
+flask-bcrypt
+scikit-learn

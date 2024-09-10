@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wheat Yield Prediction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url("static/img/dieseasebackground.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      background-blend-mode: darken;
+    }
+
+    h1 {
+      color: #fbf8f8; /* White color */
+      font-size: 36px; /* Larger font size */
+      font-weight: bold; /* Bold text */
+      text-shadow: 2px 2px 4px #2d7a3a; /* Subtle text shadow */
+    }
+
+    form {
+      background-color: #202d3a; /* Changed background color */
+      border-radius: 10px;
+      padding: 20px;
+      width: 500px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 15px gold;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      color: #ffffff; /* Changed label text color to white for better contrast */
+      margin-top: 10px;
+    }
+
+    input[type="text"],
+    select {
+      width: 80%;
+      padding: 10px;
+      margin: 5px 0px 15px;
+      border: 1px solid #ffffff; /* Changed border color to white for better contrast */
+      border-radius: 5px;
+      background-color: #ffffff; /* Ensured input fields are visible */
+      color: #000000; /* Ensured text inside input fields is readable */
+    }
+
+    input[type="submit"] {
+      background-color: #25ac64; /* Changed button background color */
+      color: #ffffff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #1f8e50; /* Slightly darker color for hover effect */
+    }
+
+    p {
+      margin: 20px 0;
+      font-weight: bold;
+      color: #f1f6f4;
+    }
+
+    .additional-info-box {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: justify;
+      max-width: 999px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .image-container {
+      max-width: 35%;
+      box-sizing: border-box;
+      padding: 30px;
+      float: right;
+      margin-top: -20px;
+      margin-right: -60px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Wheat Yield Prediction</h1>
+  <h3>{{ yield_info.title }}</h3>
+  <p>{{ yield_info.description }}</p>
+  <form method="post" action="/yield_predict" id="prediction-form" onsubmit="return validateForm()">
+    <label for="state">Select State:</label>
+    <select name="state" id="state" onchange="updateDistricts()">
+      <option value="">Select State</option>
+      <option value="Andhra Pradesh">Andhra Pradesh</option>
+      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+      <option value="Assam">Assam</option>
+      <option value="Bihar">Bihar</option>
+      <option value="Chhattisgarh">Chhattisgarh</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Goa">Goa</option>
+      <option value="Gujarat">Gujarat</option>
+      <option value="Haryana">Haryana</option>
+      <option value="Himachal Pradesh">Himachal Pradesh</option>
+      <option value="Jammu & Kashmir">Jammu & Kashmir</option>
+      <option value="Jharkhand">Jharkhand</option>
+      <option value="Kerala">Kerala</option>
+      <option value="Punjab">Punjab</option>
+    </select>
+
+    <label for="district">Select District:</label>
+    <select name="district" id="district">
+      <option value="">Select District</option>
+    </select>
+    <br /><br />
+    <label for="month">Select Month:</label>
+    <select name="month" id="month">
+      <!-- Month options -->
+      <option value="1">January</option>
+      <option value="2">February</option>
+      <option value="3">March</option>
+      <option value="4">April</option>
+      <option value="5">May</option>
+      <option value="6">June</option>
+      <option value="7">July</option>
+      <option value="8">August</option>
+      <option value="9">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
+    </select>
+    <br /><br />
+    <input type="submit" value="Predict" />
+  </form>
+
+  <div id="result">
+    <!-- Prediction result will be displayed here -->
+  </div>
+
+  <script>
+    function updateDistricts() {
+      var stateSelect = document.getElementById("state");
+      var districtSelect = document.getElementById("district");
+      var stateValue = stateSelect.value;
+
+      // District options for each state
+      var districts = {
+        "Andhra Pradesh": [
+          "Anantapur", "Chittoor", "East Godavari", "Guntur", "Krishna", "Kurnool", 
+          "Prakasam", "SPSR Nellore", "Srikakulam", "Visakhapatnam", "Vizianagaram", 
+          "West Godavari", "Y.S.R."
+        ],
+        "Arunachal Pradesh": [
+          "Anjaw", "Changlang", "Dibang Valley", "East Kameng", "East Siang", "Kamle",
+          "Kra Daadi", "Kurung Kumey", "Leparada", "Lohit", "Longding", "Lower Dibang Valley",
+          "Lower Siang", "Lower Subansiri", "Namsai", "Pakke Kessang", "Papum Pare",
+          "Shi Yomi", "Siang", "Tawang", "Tirap", "Upper Siang", "Upper Subansiri",
+          "West Kameng", "West Siang"
+        ],
+        "Assam": [
+          "Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Chirang", "Darrang",
+          "Dhemaji", "Dhubri", "Dibrugarh", "Goalpara", "Golaghat", "Hailakandi",
+          "Jorhat", "Kamrup", "Kamrup Metro", "Karbi Anglong", "Karimganj", "Kokrajhar",
+          "Lakhimpur", "Marigaon", "Nagaon", "Nalbari", "Sivasagar", "Sonitpur",
+          "Tinsukia", "Udalguri", "West Karbi Anglong"
+        ],
+        "Bihar": [
+          "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Buxar", "Darbhanga", "Gaya",
+          "Gopalganj", "Jamui", "Jehanabad", "Kaimur (Bhabua)", "Katihar", "Khagaria",
+          "Kishanganj", "Lakhisarai", "Madhepura", "Madhubani", "Munger", "Muzaffarpur",
+          "Nalanda", "Nawada", "Patna", "Purnia", "Rohtas", "Samastipur", "Saran",
+          "Sheikhpura", "Sheohar", "Sitamarhi", "Siwan", "Supaul", "Vaishali"
+        ],
+        "Chhattisgarh": [
+          "Bastar", "Bijapur", "Bilaspur", "Dantewada", "Dhamtari", "Durg",
+          "Janjgir-Champa", "Jashpur", "Kanker", "Korba", "Korea", "Mahasamund",
+          "Narayanpur", "Raigarh", "Raipur", "Rajnandgaon", "Surguja"
+        ],
+        "Delhi": [
+          "Central", "East", "New Delhi", "North", "North East", "North West",
+          "Shahdara", "South", "South East", "South West", "West"
+        ],
+        "Goa": [
+          "North Goa", "South Goa"
+        ],
+        "Gujarat": [
+          "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch",
+          "Bhavnagar", "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka",
+          "Gandhinagar", "Gir Somnath", "Jamnagar", "Junagadh", "Kheda", "Kutch",
+          "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan",
+          "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar", "Tapi",
+          "Vadodara", "Valsad"
+        ],
+        "Haryana": [
+          "Ambala", "Bhiwani", "Charkhi Dadri", "Faridabad", "Fatehabad", "Gurgaon",
+          "Hisar", "Jhajjar", "Jind", "Kaithal", "Karnal", "Kurukshetra", "Mahendragarh",
+          "Mewat", "Palwal", "Panchkula", "Panipat", "Rewari", "Rohtak", "Sirsa",
+          "Sonipat", "Yamunanagar"
+        ],
+        "Himachal Pradesh": [
+          "Bilaspur", "Chamba", "Hamirpur", "Kangra", "Kinnaur", "Kullu", "Lahaul-Spiti",
+          "Mandi", "Shimla", "Sirmaur", "Solan", "Una"
+        ],
+        "Jammu & Kashmir": [
+          "Anantnag", "Bandipora", "Baramulla", "Budgam", "Doda", "Ganderbal",
+          "Jammu", "Kathua", "Kishtwar", "Kulgam", "Kupwara", "Poonch", "Pulwama",
+          "Rajouri", "Ramban", "Reasi", "Samba", "Shopian", "Srinagar", "Udhampur"
+        ],
+        "Jharkhand": [
+          "Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum",
+          "Garhwa", "Giridih", "Godda", "Gumla", "Hazaribagh", "Jamtara",
+          "Khunti", "Koderma", "Latehar", "Lohardaga", "Pakur", "Palamu",
+          "Ramgarh", "Ranchi", "Sahebganj", "Seraikela-Kharsawan", "Simdega",
+          "West Singhbhum"
+        ],
+        "Kerala": [
+          "Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam",
+          "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta",
+          "Thiruvananthapuram", "Thrissur", "Wayanad"
+        ],
+        "Punjab": [
+          "Amritsar", "Barnala", "Bathinda", "Faridkot", "Fatehgarh Sahib", "Fazilka",
+          "Ferozepur", "Gurdaspur", "Hoshiarpur", "Jalandhar", "Kapurthala", "Ludhiana",
+          "Mansa", "Moga", "Mohali", "Muktsar", "Nawanshahr", "Pathankot", "Patiala",
+          "Rupnagar", "Sangrur", "Tarn Taran"
+        ]
+      };
+
+      // Clear previous district options
+      districtSelect.innerHTML = "<option value=''>Select District</option>";
+
+      // Populate districts based on the selected state
+      if (districts[stateValue]) {
+        districts[stateValue].forEach(function(district) {
+          var option = document.createElement("option");
+          option.value = district;
+          option.text = district;
+          districtSelect.appendChild(option);
+        });
+      }
+    }
+
+    function validateForm() {
+      var state = document.getElementById("state").value;
+      var district = document.getElementById("district").value;
+      var month = document.getElementById("month").value;
+
+      if (state === "") {
+        alert("Please select a state.");
+        return false;
+      }
+
+      if (district === "") {
+        alert("Please select a district.");
+        return false;
+      }
+
+      if (month === "") {
+        alert("Please select a month.");
+        return false;
+      }
+
+      return true;
+    }
+  </script>
+</body>
+</html>

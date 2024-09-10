@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("static/img/dieseasebackground.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            background-blend-mode: darken;
+        }
+
+        h1 {
+            color: #fbf8f8;
+            font-size: 36px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px #2d7a3a;
+        }
+
+        form {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 5px 0px 15px;
+            border: 1px solid green;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #104926;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0f7732;
+        }
+
+        p {
+            margin: 20px 0;
+            font-weight: bold;
+            color: #f1f6f4;
+        }
+
+        .additional-info-box {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: justify;
+            max-width: 999px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .image-container {
+            max-width: 35%;
+            box-sizing: border-box;
+            padding: 30px;
+            float: right;
+            margin-top: -20px;
+            margin-right: -60px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Google Map Styling */
+        .map-container {
+            margin-top: 30px;
+            width: 100%;
+            height: 500px;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather Information</h1>
+    <form method="POST" action="/weather_today">
+        <label for="city">Enter City:</label>
+        <input type="text" id="city" name="city">
+        <input type="submit" value="Get Weather">
+    </form>
+
+    {% if city %}
+        <h2>Weather in {{ city }}</h2>
+        <p>Temperature: {{ (temperature - 273.15) | round }} °C</p>
+        <p>Description: {{ description }}</p>
+
+        <!-- Google Map -->
+        <div class="map-container">
+            <iframe 
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                style="border:0" 
+                src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q={{ city | urlencode }}" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+</body>
+</html>
